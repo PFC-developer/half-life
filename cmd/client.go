@@ -26,7 +26,7 @@ func newClient(addr string) (rpcclient.Client, error) {
 	}
 
 	httpClient.Timeout = 10 * time.Second
-	rpcClient, err := rpchttp.NewWithClient(addr, "/websocket", httpClient)
+	rpcClient, err := rpchttp.NewWithClient(addr, httpClient)
 	if err != nil {
 		return nil, err
 	}
