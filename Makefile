@@ -12,7 +12,7 @@ ifeq (,$(VERSION))
   endif
 endif
 
-FQCN = ghcr.io/strangelove-ventures/half-life/halflife # default value, overide with: make -e FQCN="foo"
+FQCN = ghcr.io/pfc-developer/half-life/halflife # default value, overide with: make -e FQCN="foo"
 
 all: install
 
@@ -32,6 +32,7 @@ fmt:
 clean:
 	rm -rf build
 
+# this is also done as a github action
 build-docker:
 	docker build -t $(FQCN):$(VERSION) -f ./Dockerfile .
 	docker push $(FQCN):$(VERSION)
