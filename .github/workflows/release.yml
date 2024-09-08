@@ -23,17 +23,11 @@ jobs:
       - run: echo ":rocket::rocket::rocket:" > ../release_notes.md
         if: startsWith(github.ref, 'refs/tags/')
 
-      - name: Build
-        uses: goreleaser/goreleaser-action@v6
-        with:
-          version: latest
-          args: build --skip-validate   # skip validate skips initial sanity checks in order to be able to fully run
-
       - name: Release
         uses: goreleaser/goreleaser-action@v6
         if: startsWith(github.ref, 'refs/tags/')
         with:
           version: latest
-          args: release --rm-dist --release-notes=../release_notes.md
+          args: release --clean --rm-dist --release-notes=../release_notes.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
