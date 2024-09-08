@@ -14,7 +14,7 @@ var monitorCmd = &cobra.Command{
 	Use:   "monitor",
 	Short: "Daemon to monitor validators",
 	Long:  "Monitors validators and pushes alerts to Discord using the configuration in config.yaml",
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(cmd *cobra.Command, _ []string) {
 		configFile, _ := cmd.Flags().GetString("file")
 		dat, err := os.ReadFile(configFile)
 		if err != nil {
@@ -93,9 +93,9 @@ var monitorCmd = &cobra.Command{
 			}
 			alertStateLock := sync.Mutex{}
 			if i == len(config.Validators)-1 {
-				runMonitor(notificationService, alertState[vm.Name], &alertStateLock, configFile, statusFile, &config, &status, vm, vmStatus, &writeConfigMutex)
+				runMonitor(notificationService, alertState[vm.Name], &alertStateLock, statusFile, &config, &status, vm, vmStatus, &writeConfigMutex)
 			} else {
-				go runMonitor(notificationService, alertState[vm.Name], &alertStateLock, configFile, statusFile, &config, &status, vm, vmStatus, &writeConfigMutex)
+				go runMonitor(notificationService, alertState[vm.Name], &alertStateLock, statusFile, &config, &status, vm, vmStatus, &writeConfigMutex)
 			}
 		}
 	},

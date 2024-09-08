@@ -2,8 +2,14 @@ package cmd
 
 import (
 	"context"
+	"crypto/tls"
+	"log"
 	"os"
+	"strings"
 	"time"
+
+	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/credentials/insecure"
 
 	rpcclient "github.com/cometbft/cometbft/rpc/client"
 	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
@@ -64,11 +70,25 @@ func getSigningInfo(client *cosmosClient.Context, address string) (*slashingtype
 }
 
 func getSentryInfo(grpcAddr string) (*tmservice.GetNodeInfoResponse, *tmservice.GetLatestBlockResponse, error) {
-	conn, err := grpc.Dial(grpcAddr, grpc.WithInsecure())
+	creds := grpc.WithTransportCredentials(insecure.NewCredentials())
+	if strings.Contains(grpcAddr, ":443") {
+		creds = grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{MinVersion: tls.VersionTLS12}))
+	}
+	// ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+
+	conn, err := grpc.NewClient(
+		grpcAddr,
+		creds)
+
 	if err != nil {
 		return nil, nil, err
 	}
-	defer conn.Close()
+	defer func(conn *grpc.ClientConn) {
+		err := conn.Close()
+		if err != nil {
+			log.Fatalf("Could not close grpc connection: %v", err)
+		}
+	}(conn)
 	serviceClient := tmservice.NewServiceClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(time.Second*sentryGRPCTimeoutSeconds))
 	defer cancel()

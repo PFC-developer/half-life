@@ -19,7 +19,6 @@ const (
 )
 
 func monitorValidator(
-	config *HalfLifeConfig,
 	vm *ValidatorMonitor,
 	stats *ValidatorStats,
 ) (errs []IgnorableError) {
@@ -160,7 +159,6 @@ func monitorSentry(
 	errsLock *sync.Mutex,
 	sentry Sentry,
 	stats *ValidatorStats,
-	vm *ValidatorMonitor,
 	alertState *ValidatorAlertState,
 	alertStateLock *sync.Mutex,
 ) {
@@ -171,14 +169,14 @@ func monitorSentry(
 		errsToAdd = append(errsToAdd, newSentryGRPCError(sentry.Name, err.Error()))
 		sentryStats.SentryAlertType = sentryAlertTypeGRPCError
 	} else {
-		sentryStats.Height = syncInfo.Block.Header.Height
+		sentryStats.Height = syncInfo.SdkBlock.Header.Height
 		sentryStats.Version = nodeInfo.ApplicationVersion.GetVersion()
 		alertStateLock.Lock()
-		blockDelta := syncInfo.Block.Header.Height - alertState.SentryLatestHeight[sentry.Name]
-		alertState.SentryLatestHeight[sentry.Name] = syncInfo.Block.Header.Height
+		blockDelta := syncInfo.SdkBlock.Header.Height - alertState.SentryLatestHeight[sentry.Name]
+		alertState.SentryLatestHeight[sentry.Name] = syncInfo.SdkBlock.Header.Height
 		alertStateLock.Unlock()
 		if blockDelta == 0 {
-			timeSinceLastBlock := time.Now().UnixNano() - syncInfo.Block.Header.Time.UnixNano()
+			timeSinceLastBlock := time.Now().UnixNano() - syncInfo.SdkBlock.Header.Time.UnixNano()
 			if timeSinceLastBlock > haltThresholdNanoseconds {
 				errsToAdd = append(errsToAdd, newSentryHaltError(sentry.Name, timeSinceLastBlock))
 				sentryStats.SentryAlertType = sentryAlertTypeHalt
@@ -204,7 +202,7 @@ func monitorSentries(
 	sentries := *vm.Sentries
 	wg.Add(len(sentries))
 	for _, sentry := range sentries {
-		go monitorSentry(&wg, &errs, &errsLock, sentry, stats, vm, alertState, alertStateLock)
+		go monitorSentry(&wg, &errs, &errsLock, sentry, stats, alertState, alertStateLock)
 	}
 	wg.Wait()
 	return errs
@@ -217,10 +215,7 @@ func monitorWallet(
 	wallet Wallet,
 	stats *ValidatorStats,
 	vm *ValidatorMonitor,
-	alertState *ValidatorAlertState,
-	alertStateLock *sync.Mutex,
 ) {
-
 	var errsToAdd []error
 	walletStats := WalletStats{Name: wallet.Name, Address: wallet.Address, WalletAlertType: walletAlertTypeNone}
 
@@ -228,7 +223,6 @@ func monitorWallet(
 	if err != nil {
 		errsToAdd = append(errsToAdd, newGenericRPCError(err.Error()))
 	} else {
-
 		walletInfo, err := getWalletBalance(client, wallet.Address, wallet.MinimumBalanceDenom)
 		if err != nil {
 			errsToAdd = append(errsToAdd, newWalletAlertRPCError(wallet.Name, err.Error()))
@@ -254,8 +248,6 @@ func monitorWallet(
 func monitorWallets(
 	stats *ValidatorStats,
 	vm *ValidatorMonitor,
-	alertState *ValidatorAlertState,
-	alertStateLock *sync.Mutex,
 ) []error {
 	errs := make([]error, 0)
 	wg := sync.WaitGroup{}
@@ -263,7 +255,7 @@ func monitorWallets(
 	wallets := *vm.Wallets
 	wg.Add(len(wallets))
 	for _, wallet := range wallets {
-		go monitorWallet(&wg, &errs, &errsLock, wallet, stats, vm, alertState, alertStateLock)
+		go monitorWallet(&wg, &errs, &errsLock, wallet, stats, vm)
 	}
 	wg.Wait()
 	return errs
@@ -273,7 +265,6 @@ func runMonitor(
 	notificationService NotificationService,
 	alertState *ValidatorAlertState,
 	alertStateLock *sync.Mutex,
-	configFile string,
 	statusFile string,
 	config *HalfLifeConfig,
 	status *HalfLifeStatus,
@@ -299,7 +290,7 @@ func runMonitor(
 			}
 
 			for i := 0; i < rpcRetries; i++ {
-				valErrs = monitorValidator(config, vm, &stats)
+				valErrs = monitorValidator(vm, &stats)
 				if len(valErrs) == 0 {
 					fmt.Printf("No errors found for validator: %s\n", vm.Name)
 					break
@@ -339,7 +330,7 @@ func runMonitor(
 		if vm.Wallets != nil {
 			wg.Add(1)
 			go func() {
-				walletErrs = monitorWallets(&stats, vm, alertState, alertStateLock)
+				walletErrs = monitorWallets(&stats, vm)
 				if len(walletErrs) == 0 {
 					fmt.Printf("No errors found for wallets: %s\n", vm.Name)
 				} else {
@@ -372,7 +363,7 @@ func runMonitor(
 		}
 
 		alertStateLock.Lock()
-		notification := getAlertNotification(config, vm, &stats, alertState, errs)
+		notification := getAlertNotification(vm, &stats, alertState, errs)
 		alertStateLock.Unlock()
 
 		if notification != nil {
@@ -454,7 +445,6 @@ func (stats *ValidatorStats) determineAggregatedErrorsAndAlertLevel(vm *Validato
 
 // requires locked alertState
 func getAlertNotification(
-	config *HalfLifeConfig,
 	vm *ValidatorMonitor,
 	stats *ValidatorStats,
 	alertState *ValidatorAlertState,

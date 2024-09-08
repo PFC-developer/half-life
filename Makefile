@@ -22,6 +22,13 @@ install: go.sum
 build:
 	go build -o bin/halflife .
 
+lint:
+	golangci-lint run -v
+
+fmt:
+	goimports -l -w .
+	gofmt -l .
+
 clean:
 	rm -rf build
 

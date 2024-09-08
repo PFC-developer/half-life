@@ -20,7 +20,7 @@ type ignoreableError struct{ err error }
 func (e *ignoreableError) Error() string {
 	return e.err.Error()
 }
-func (e *ignoreableError) Active(config AlertConfig) bool {
+func (e *ignoreableError) Active(AlertConfig) bool {
 	return true
 }
 func newIgnorableError(err error) *ignoreableError {
@@ -168,9 +168,9 @@ type WalletAlertRPCError struct {
 }
 
 func (e *WalletAlertRPCError) Error() string {
-
 	return fmt.Sprintf("%s RPC Error %s", e.wallet, e.msg)
 }
+
 func newWalletAlertRPCError(wallet string, msg string) *WalletAlertRPCError {
 	return &WalletAlertRPCError{wallet, msg}
 }
@@ -182,9 +182,9 @@ type WalletAlertBalanceError struct {
 }
 
 func (e *WalletAlertBalanceError) Error() string {
-
 	return fmt.Sprintf("%s Balance  %d is below threshold of %d", e.wallet, e.balance, e.minimum)
 }
+
 func newWWalletAlertBalanceError(wallet string, minimum int64, balance int64) *WalletAlertBalanceError {
 	return &WalletAlertBalanceError{wallet, minimum, balance}
 }
