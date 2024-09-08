@@ -28,6 +28,6 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           version: latest
-          args: release --clean --rm-dist --release-notes=../release_notes.md
+          args: release --clean --release-notes=../release_notes.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
