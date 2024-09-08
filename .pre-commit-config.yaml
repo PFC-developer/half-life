@@ -18,6 +18,7 @@ repos:
       # Go Vet
       -   id: go-vet-repo-mod
       # Style
+      -   id: go-fumpt-repo
       -   id: go-imports-repo
       -   id: golangci-lint-repo-mod
           args: [-E,whitespace,-E,gocritic,-E,revive,-E,gosec,--timeout,5m]

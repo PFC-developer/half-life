@@ -79,7 +79,6 @@ func getSentryInfo(grpcAddr string) (*tmservice.GetNodeInfoResponse, *tmservice.
 	conn, err := grpc.NewClient(
 		grpcAddr,
 		creds)
-
 	if err != nil {
 		return nil, nil, err
 	}

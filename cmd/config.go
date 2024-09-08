@@ -251,7 +251,7 @@ func saveStatus(statusFile string, status *HalfLifeStatus, writeConfigMutex *syn
 		fmt.Printf("Error during statusFile yaml marshal %v\n", err)
 	}
 
-	err = os.WriteFile(statusFile, yamlBytes, 0600)
+	err = os.WriteFile(statusFile, yamlBytes, 0o600)
 	if err != nil {
 		fmt.Printf("Error saving statusFile yaml %v\n", err)
 	}

@@ -27,7 +27,7 @@ lint:
 
 fmt:
 	goimports -l -w .
-	gofmt -l .
+	gofumpt -l -w .
 
 clean:
 	rm -rf build
