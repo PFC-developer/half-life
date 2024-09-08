@@ -5,13 +5,13 @@ import (
 	"os"
 	"time"
 
+	rpcclient "github.com/cometbft/cometbft/rpc/client"
+	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
+	libclient "github.com/cometbft/cometbft/rpc/jsonrpc/client"
 	cosmosClient "github.com/cosmos/cosmos-sdk/client"
-	tmservice "github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
+	tmservice "github.com/cosmos/cosmos-sdk/client/grpc/cmtservice"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
-	rpcclient "github.com/tendermint/tendermint/rpc/client"
-	rpchttp "github.com/tendermint/tendermint/rpc/client/http"
-	libclient "github.com/tendermint/tendermint/rpc/jsonrpc/client"
 	"google.golang.org/grpc"
 )
 

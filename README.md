@@ -20,6 +20,8 @@ Discord messages are created in the configured webhook channel for:
 
 Binaries are available on the [releases](https://github.com/strangelove-ventures/half-life/releases) page.
 
+or you can deploy the docker file.
+
 ### Setup config.yaml
 
 Copy `config.yaml.example` to `config.yaml` and populate with your discord and validator information.
@@ -49,13 +51,13 @@ Begin monitoring with:
 halflife monitor
 ```
 
-By default, `half-life monitor` will look for `config.yaml` in the current working directory. To specify a different config file path, use the `--file`/`-f` flag:
+By default, `half-life monitor` will look for `config.yaml` and `status.yaml` in the current working directory. To specify a different config file path, use the `--file`/`-f` or `--status`/`-s` flag:
 
 ```bash
-halflife monitor -f ~/config.yaml
+halflife monitor -f ~/config.yaml -s ~/status.yaml
 ```
 
-When a validator is first added to `config.yaml` and halflife is started, a status message will be created in the discord channel and the ID of that message will be added to `config.yaml`. Pin this message so that the channel's pinned messages can act as a dashboard to see the realtime status of the validators.
+When a validator is first added to `config.yaml` and halflife is started, a status message will be created in the discord channel and the ID of that message will be added to `status.yaml`. Pin this message so that the channel's pinned messages can act as a dashboard to see the realtime status of the validators.
 
 ![Screenshot from 2022-02-28 14-29-36](https://user-images.githubusercontent.com/6722152/156061805-330d1c76-acfa-4089-b327-f35f686fa0e7.png)
 
@@ -94,4 +96,13 @@ go version
 ```
 cd ~/half-life
 go install
+```
+
+## Running with docker
+
+I usually have multiple snippets of the yaml file and put them in the config/ directory.
+
+The docker file can be run via.
+```
+docker run -it -v/tmp/config:/config -v/tmp/status:/status --rm ghcr.io/pfc-developer/half-life:latest 
 ```

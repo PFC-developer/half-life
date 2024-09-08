@@ -7,8 +7,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/cometbft/cometbft/libs/bytes"
 	"github.com/cosmos/cosmos-sdk/types/bech32"
-	"github.com/tendermint/tendermint/libs/bytes"
 )
 
 const (
@@ -274,8 +274,11 @@ func runMonitor(
 	alertState *ValidatorAlertState,
 	alertStateLock *sync.Mutex,
 	configFile string,
+	statusFile string,
 	config *HalfLifeConfig,
+	status *HalfLifeStatus,
 	vm *ValidatorMonitor,
+	vmStatus *ValidatorStatus,
 	writeConfigMutex *sync.Mutex,
 ) {
 	for {
@@ -376,7 +379,7 @@ func runMonitor(
 			notificationService.SendValidatorAlertNotification(config, vm, stats, notification)
 		}
 
-		notificationService.UpdateValidatorRealtimeStatus(configFile, config, vm, stats, writeConfigMutex)
+		notificationService.UpdateValidatorRealtimeStatus(statusFile, config, status, vm, vmStatus, stats, writeConfigMutex)
 
 		time.Sleep(30 * time.Second)
 	}
