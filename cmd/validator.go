@@ -169,14 +169,17 @@ func monitorSentry(
 		errsToAdd = append(errsToAdd, newSentryGRPCError(sentry.Name, err.Error()))
 		sentryStats.SentryAlertType = sentryAlertTypeGRPCError
 	} else {
-		sentryStats.Height = syncInfo.SdkBlock.Header.Height
+		//nolint:all
+		block := syncInfo.Block
+
+		sentryStats.Height = block.Header.Height
 		sentryStats.Version = nodeInfo.ApplicationVersion.GetVersion()
 		alertStateLock.Lock()
-		blockDelta := syncInfo.SdkBlock.Header.Height - alertState.SentryLatestHeight[sentry.Name]
-		alertState.SentryLatestHeight[sentry.Name] = syncInfo.SdkBlock.Header.Height
+		blockDelta := block.Header.Height - alertState.SentryLatestHeight[sentry.Name]
+		alertState.SentryLatestHeight[sentry.Name] = block.Header.Height
 		alertStateLock.Unlock()
 		if blockDelta == 0 {
-			timeSinceLastBlock := time.Now().UnixNano() - syncInfo.SdkBlock.Header.Time.UnixNano()
+			timeSinceLastBlock := time.Now().UnixNano() - block.Header.Time.UnixNano()
 			if timeSinceLastBlock > haltThresholdNanoseconds {
 				errsToAdd = append(errsToAdd, newSentryHaltError(sentry.Name, timeSinceLastBlock))
 				sentryStats.SentryAlertType = sentryAlertTypeHalt

@@ -1,4 +1,5 @@
 config.yaml
+/config.yaml.bak
 /status.yaml
 halflife
 **/.DS_Store
