@@ -104,5 +104,5 @@ I usually have multiple snippets of the yaml file and put them in the config/ di
 
 The docker file can be run via.
 ```
-docker run -it -v/tmp/config:/config -v/tmp/status:/status --rm ghcr.io/pfc-developer/half-life:latest 
+docker run -it -v/tmp/config:/config -v/tmp/status:/status --rm ghcr.io/pfc-developer/half-life:latest
 ```
