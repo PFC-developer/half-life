@@ -1,6 +1,6 @@
 module github.com/pfc-developer/half-life
 
-go 1.19
+go 1.22
 
 require (
 	github.com/DisgoOrg/disgo v0.7.2
