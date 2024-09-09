@@ -5,6 +5,8 @@ import (
 	"os"
 	"time"
 
+	"google.golang.org/grpc/credentials/insecure"
+
 	cosmosClient "github.com/cosmos/cosmos-sdk/client"
 	tmservice "github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
@@ -63,7 +65,9 @@ func getSigningInfo(client *cosmosClient.Context, address string) (*slashingtype
 }
 
 func getSentryInfo(grpcAddr string) (*tmservice.GetNodeInfoResponse, *tmservice.GetLatestBlockResponse, error) {
-	conn, err := grpc.Dial(grpcAddr, grpc.WithInsecure())
+	creds := grpc.WithTransportCredentials(insecure.NewCredentials())
+
+	conn, err := grpc.Dial(grpcAddr, creds)
 	if err != nil {
 		return nil, nil, err
 	}

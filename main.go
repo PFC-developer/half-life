@@ -1,6 +1,6 @@
 package main
 
-import "github.com/strangelove-ventures/halflife/cmd"
+import "github.com/pfc-developer/halflife/cmd"
 
 func main() {
 	cmd.Execute()

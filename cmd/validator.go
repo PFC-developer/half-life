@@ -19,7 +19,7 @@ const (
 )
 
 func monitorValidator(
-	config *HalfLifeConfig,
+	_ *HalfLifeConfig,
 	vm *ValidatorMonitor,
 	stats *ValidatorStats,
 ) (errs []IgnorableError) {
@@ -160,7 +160,7 @@ func monitorSentry(
 	errsLock *sync.Mutex,
 	sentry Sentry,
 	stats *ValidatorStats,
-	vm *ValidatorMonitor,
+	_ *ValidatorMonitor,
 	alertState *ValidatorAlertState,
 	alertStateLock *sync.Mutex,
 ) {
@@ -376,7 +376,7 @@ func (stats *ValidatorStats) determineAggregatedErrorsAndAlertLevel(vm *Validato
 
 // requires locked alertState
 func getAlertNotification(
-	config *HalfLifeConfig,
+	_ *HalfLifeConfig,
 	vm *ValidatorMonitor,
 	stats *ValidatorStats,
 	alertState *ValidatorAlertState,

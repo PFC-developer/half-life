@@ -1,0 +1,67 @@
+alerts:
+  ignore-alerts: []
+notifications:
+  service: discord
+  discord:
+    webhook:
+      id: "979242205426364436"
+      token: /_2tpjgGzl050XfxXsESrDbRorvWHTXxN5xiHJB2ATx_kjj16B3B3gMza4KD_bJ77trnv
+    alert-user-ids:
+      - "210410375752056834"
+    username: ""
+validators:
+  - name: Union PFC
+    rpc: https://rpc.union.test.pfc.zone:443/
+    fullnode: false
+    address: unionvalcons1e5krwul0urqff9ue877c5ejpv89qfenwka963t
+    chain-id: union-testnet-5
+    rpc-retries: 20
+    missed-blocks-threshold: null
+    sentry-grpc-error-threshold: null
+    sentries: null
+    wallets: null
+    slashing_warn_threshold: 99.8
+    slashing_error_threshold: 98
+    recent_blocks_to_check: 20
+    notify_every: 20
+    recent_missed_blocks_notify_threshold: 10
+  - name: Injective
+    rpc: http://n-ovh-gra-01.medici.loan:4093
+    fullnode: false
+    address: injvalcons1a9efq9vresqrcnpc3mewda2hp2ls6km4qsyzm8
+    chain-id: injective-1
+    rpc-retries: 20
+    missed-blocks-threshold: null
+    sentry-grpc-error-threshold: null
+    sentries:
+      - name: n-ovh-lim-01
+        grpc: 162.19.235.43:4090
+      - name: n-ovh-gra-01
+        grpc: 135.125.67.129:4090
+      - name: n-ovh-sbg-01
+        grpc: 162.19.104.5:4090
+    wallets: null
+    slashing_warn_threshold: 99.8
+    slashing_error_threshold: 98
+    recent_blocks_to_check: 20
+    notify_every: 20
+    recent_missed_blocks_notify_threshold: 10
+
+  - name: SEI - Pacific-1 - OBI
+    rpc: http://n-ovh-rbx-02.medici.loan:26657
+    fullnode: false
+    address: seivalcons1lpu8z22zacjkdwzf4km4mfue8lvn44cag0gyw6
+    chain-id: pacific-1
+    rpc-retries: 20
+    missed-blocks-threshold: 3
+    sentry-grpc-error-threshold: null
+    sentries:
+      - name: n-ovh-rbx-01
+        grpc: 164.132.247.37:9090
+      - name: n-ovh-rbx-02
+        grpc: 46.105.222.135:9090
+    slashing_warn_threshold: 95.8
+    slashing_error_threshold: 85
+    recent_blocks_to_check: 20
+    notify_every: 20
+    recent_missed_blocks_notify_threshold: 10

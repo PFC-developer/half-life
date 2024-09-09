@@ -1,0 +1,7 @@
+validators:
+- name: Union PFC
+  discord-status-message-id: null
+- name: foo
+  discord-status-message-id: "1282359465370193963"
+- name: Injective
+  discord-status-message-id: "1282360325496373271"

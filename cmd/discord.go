@@ -253,7 +253,7 @@ func (service *DiscordNotificationService) SendValidatorAlertNotification(
 			Username: config.Notifications.Discord.Username,
 			Content:  toNotify,
 			Embeds: []discord.Embed{
-				discord.Embed{
+				{
 					Title:       embedTitle,
 					Description: fmt.Sprintf("**Errors:**\n%s", strings.Trim(alertString, "\n")),
 					Color:       alertColor,
@@ -284,7 +284,7 @@ func (service *DiscordNotificationService) SendValidatorAlertNotification(
 			Username: config.Notifications.Discord.Username,
 			Content:  toNotify,
 			Embeds: []discord.Embed{
-				discord.Embed{
+				{
 					Title:       embedTitle,
 					Description: fmt.Sprintf("**Errors cleared:**\n%s", strings.Trim(clearedAlertsString, "\n")),
 					Color:       colorGood,

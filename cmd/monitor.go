@@ -14,7 +14,7 @@ var monitorCmd = &cobra.Command{
 	Use:   "monitor",
 	Short: "Daemon to monitor validators",
 	Long:  "Monitors validators and pushes alerts to Discord using the configuration in config.yaml",
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(cmd *cobra.Command, _ []string) {
 		configFile, _ := cmd.Flags().GetString("file")
 		dat, err := os.ReadFile(configFile)
 		if err != nil {

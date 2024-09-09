@@ -1,4 +1,4 @@
-module github.com/strangelove-ventures/halflife
+module github.com/pfc-developer/halflife
 
 go 1.19
 

@@ -12,7 +12,7 @@ ifeq (,$(VERSION))
   endif
 endif
 
-FQCN = ghcr.io/strangelove-ventures/half-life/halflife # default value, overide with: make -e FQCN="foo"
+FQCN = ghcr.io/pfc-developer/half-life/halflife # default value, overide with: make -e FQCN="foo"
 
 all: install
 
