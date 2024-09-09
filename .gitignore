@@ -2,6 +2,7 @@ config.yaml
 /config.yaml.bak
 /status.yaml
 halflife
+half-life
 **/.DS_Store
 .idea/*
 dist/
