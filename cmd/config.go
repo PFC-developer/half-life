@@ -12,6 +12,7 @@ import (
 
 const (
 	configFilePath                                      = "./config.yaml"
+	statusFilePath                                      = "./status.yaml"
 	defaultSlashingPeriodUptimeWarningThreshold float64 = 99.80 // 20 of the last 10,000 blocks missed
 	defaultSlashingPeriodUptimeErrorThreshold   float64 = 98    // 200 of the last 10,000 blocks missed
 	defaultRecentBlocksToCheck                  int64   = 20
@@ -193,7 +194,6 @@ type ValidatorMonitor struct {
 	FullNode                 bool      `yaml:"fullnode"`
 	Address                  string    `yaml:"address"`
 	ChainID                  string    `yaml:"chain-id"`
-	DiscordStatusMessageID   *string   `yaml:"discord-status-message-id"`
 	RPCRetries               *int      `yaml:"rpc-retries"`
 	MissedBlocksThreshold    *int64    `yaml:"missed-blocks-threshold"`
 	SentryGRPCErrorThreshold *int64    `yaml:"sentry-grpc-error-threshold"`
@@ -205,18 +205,27 @@ type ValidatorMonitor struct {
 	NotifyEvery                          int64   `yaml:"notify_every"`
 	RecentMissedBlocksNotifyThreshold    int64   `yaml:"recent_missed_blocks_notify_threshold"`
 }
+type ValidatorStatus struct {
+	Name string `yaml:"name"`
 
-func saveConfig(configFile string, config *HalfLifeConfig, writeConfigMutex *sync.Mutex) {
+	DiscordStatusMessageID *string `yaml:"discord-status-message-id"`
+}
+
+type HalfLifeStatus struct {
+	Validators []*ValidatorStatus `yaml:"validators"`
+}
+
+func saveStatus(statusFile string, status *HalfLifeStatus, writeConfigMutex *sync.Mutex) {
 	writeConfigMutex.Lock()
 	defer writeConfigMutex.Unlock()
 
-	yamlBytes, err := yaml.Marshal(config)
+	yamlBytes, err := yaml.Marshal(status)
 	if err != nil {
-		fmt.Printf("Error during config yaml marshal %v\n", err)
+		fmt.Printf("Error during status yaml marshal %v\n", err)
 	}
 
-	err = os.WriteFile(configFile, yamlBytes, 0o600)
+	err = os.WriteFile(statusFile, yamlBytes, 0o600)
 	if err != nil {
-		fmt.Printf("Error saving config yaml %v\n", err)
+		fmt.Printf("Error status config yaml %v\n", err)
 	}
 }

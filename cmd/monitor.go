@@ -31,6 +31,30 @@ var monitorCmd = &cobra.Command{
 			panic("Notifications configuration is not present in config.yaml")
 		}
 
+		statusFile, _ := cmd.Flags().GetString("status")
+		statusDat, err := os.ReadFile(statusFile)
+		status := HalfLifeStatus{}
+		if err != nil {
+			log.Println("No status file found in. Assuming new install")
+		} else {
+			err = yaml.Unmarshal(statusDat, &status)
+			if err != nil {
+				log.Fatalf("Error parsing status.yaml: %v", err)
+			}
+		}
+		for _, vm := range config.Validators {
+			found := false
+			for _, thisStatus := range status.Validators {
+				if thisStatus.Name == vm.Name {
+					found = true
+				}
+			}
+			if !found {
+				vmStatus := &ValidatorStatus{Name: vm.Name, DiscordStatusMessageID: nil}
+				status.Validators = append(status.Validators, vmStatus)
+			}
+		}
+
 		writeConfigMutex := sync.Mutex{}
 		// TODO implement more notification services e.g. slack, email
 		var notificationService NotificationService
@@ -56,11 +80,20 @@ var monitorCmd = &cobra.Command{
 				SentryHaltErrorCounts:      make(map[string]int64),
 				SentryLatestHeight:         make(map[string]int64),
 			}
+			var vmStatus *ValidatorStatus = nil
+			for _, thisStatus := range status.Validators {
+				if thisStatus.Name == vm.Name {
+					vmStatus = thisStatus
+				}
+			}
+			if vmStatus == nil {
+				log.Fatalf("Missing Validator Status %s", vm.Name)
+			}
 			alertStateLock := sync.Mutex{}
 			if i == len(config.Validators)-1 {
-				runMonitor(notificationService, alertState[vm.Name], &alertStateLock, configFile, &config, vm, &writeConfigMutex)
+				runMonitor(notificationService, alertState[vm.Name], &alertStateLock, configFile, statusFile, &config, &status, vm, vmStatus, &writeConfigMutex)
 			} else {
-				go runMonitor(notificationService, alertState[vm.Name], &alertStateLock, configFile, &config, vm, &writeConfigMutex)
+				go runMonitor(notificationService, alertState[vm.Name], &alertStateLock, configFile, statusFile, &config, &status, vm, vmStatus, &writeConfigMutex)
 			}
 		}
 	},
@@ -69,4 +102,5 @@ var monitorCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(monitorCmd)
 	monitorCmd.Flags().StringP("file", "f", configFilePath, "File path to config yaml")
+	monitorCmd.Flags().StringP("status", "s", statusFilePath, "File path to keep status")
 }

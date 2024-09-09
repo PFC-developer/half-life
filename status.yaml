@@ -5,3 +5,5 @@ validators:
   discord-status-message-id: "1282359465370193963"
 - name: Injective
   discord-status-message-id: "1282360325496373271"
+- name: SEI - Pacific-1 - OBI
+  discord-status-message-id: "1282502197401096287"

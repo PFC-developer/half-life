@@ -169,9 +169,11 @@ func (service *DiscordNotificationService) client() *webhook.Client {
 
 // implements NotificationService interface
 func (service *DiscordNotificationService) UpdateValidatorRealtimeStatus(
-	configFile string,
+	statusFile string,
 	config *HalfLifeConfig,
+	status *HalfLifeStatus,
 	vm *ValidatorMonitor,
+	vmStatus *ValidatorStatus,
 	stats ValidatorStats,
 	writeConfigMutex *sync.Mutex,
 ) {
@@ -179,9 +181,9 @@ func (service *DiscordNotificationService) UpdateValidatorRealtimeStatus(
 	defer cancel()
 	client := service.client()
 	defer client.Close(ctx)
-	if vm.DiscordStatusMessageID != nil {
+	if vmStatus.DiscordStatusMessageID != nil {
 		service.postMutex.Lock()
-		_, err := client.UpdateMessage(snowflake.Snowflake(*vm.DiscordStatusMessageID), discord.WebhookMessageUpdate{
+		_, err := client.UpdateMessage(snowflake.Snowflake(*vmStatus.DiscordStatusMessageID), discord.WebhookMessageUpdate{
 			Embeds: &[]discord.Embed{
 				getCurrentStatsEmbed(stats, vm),
 			},
@@ -205,9 +207,9 @@ func (service *DiscordNotificationService) UpdateValidatorRealtimeStatus(
 			return
 		}
 		messageID := string(message.ID)
-		vm.DiscordStatusMessageID = &messageID
+		vmStatus.DiscordStatusMessageID = &messageID
 		fmt.Printf("Saved message ID: %s\n", messageID)
-		saveConfig(configFile, config, writeConfigMutex)
+		saveStatus(statusFile, status, writeConfigMutex)
 	}
 }
 

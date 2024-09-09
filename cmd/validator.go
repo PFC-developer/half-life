@@ -214,9 +214,12 @@ func runMonitor(
 	notificationService NotificationService,
 	alertState *ValidatorAlertState,
 	alertStateLock *sync.Mutex,
-	configFile string,
+	_ string,
+	statusFile string,
 	config *HalfLifeConfig,
+	status *HalfLifeStatus,
 	vm *ValidatorMonitor,
+	vmStatus *ValidatorStatus,
 	writeConfigMutex *sync.Mutex,
 ) {
 	for {
@@ -301,7 +304,7 @@ func runMonitor(
 			notificationService.SendValidatorAlertNotification(config, vm, stats, notification)
 		}
 
-		notificationService.UpdateValidatorRealtimeStatus(configFile, config, vm, stats, writeConfigMutex)
+		notificationService.UpdateValidatorRealtimeStatus(statusFile, config, status, vm, vmStatus, stats, writeConfigMutex)
 
 		time.Sleep(30 * time.Second)
 	}
