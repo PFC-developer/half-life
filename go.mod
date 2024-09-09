@@ -1,4 +1,4 @@
-module github.com/pfc-developer/halflife
+module github.com/pfc-developer/half-life
 
 go 1.19
 
@@ -122,3 +122,5 @@ replace (
 	github.com/tendermint/tendermint => github.com/sei-protocol/sei-tendermint v0.1.178
 
 )
+
+replace github.com/pfc-developer/half-life => ./
