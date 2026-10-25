@@ -1,4 +1,4 @@
-FROM golang:1.22-alpine AS build-env
+FROM golang:1.26-alpine AS build-env
 
 RUN apk add --no-cache make git
 
@@ -10,7 +10,7 @@ ARG TARGETOS=linux
 
 RUN export GOOS=${TARGETOS} GOARCH=${TARGETARCH} && make build
 
-FROM alpine:edge
+FROM alpine:3.24
 
 RUN apk add --no-cache ca-certificates curl bash yq
 COPY --chmod=0755 ./bin/halflife.sh /usr/bin/halflife.sh
